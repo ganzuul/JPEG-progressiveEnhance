@@ -4,13 +4,11 @@
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://nya.dy.fi:9000');
-    var parts = new Uint8Array(0);
+    var parts = new Uint8Array(0); // Buffer for parts
     var pic = [];
     // Received new stream from server!
     client.on('stream', function(stream, meta)
     {    
-      // Buffer for parts
-
       // Got new data
       stream.on('data', function(data)
       {
@@ -23,8 +21,9 @@
 	console.log(parts + ' ' + ln + ' ' + data.byteLength);
 	pic.push(parts);
 	var img = document.createElement("img");
-        img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(pic));
-        document.body.appendChild(img);
+	img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(pic));
+	document.body.appendChild(img);
+	pic.pop();
       });
 
  /*     stream.on('end', function()
