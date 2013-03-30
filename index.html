@@ -4,18 +4,30 @@
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://localhost:9000');
+    var parts = new Uint8Array(0);
+    var pic = [];
     // Received new stream from server!
     client.on('stream', function(stream, meta){    
       // Buffer for parts
-      var parts = [];
+
       // Got new data
-      stream.on('data', function(data){
-        parts.push(data);
+      stream.on('data', function(data)
+      {
+	var ln = parts.byteLength;
+	buf = new Uint8Array(ln);
+	buf.set(parts);
+	parts = new Uint8Array(ln + data.byteLength);
+	parts.set(buf);
+	parts.set(new Uint8Array(data), ln);
+	console.log(parts + ' ' + ln + ' ' + data.byteLength);
       });
-      stream.on('end', function(){
-        // Display new data in browser!
-        var img = document.createElement("img");
-        img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
+
+      stream.on('end', function()
+      {
+	// Display new data in browser!
+	pic.push(parts);
+	var img = document.createElement("img");
+        img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(pic));
         document.body.appendChild(img);
       });
     });
