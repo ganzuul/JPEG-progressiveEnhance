@@ -3,11 +3,12 @@
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script>
     // Connect to Binary.js server
-    var client = new BinaryClient('ws://localhost:9000');
+    var client = new BinaryClient('ws://nya.dy.fi:9000');
     var parts = new Uint8Array(0);
     var pic = [];
     // Received new stream from server!
-    client.on('stream', function(stream, meta){    
+    client.on('stream', function(stream, meta)
+    {    
       // Buffer for parts
 
       // Got new data
@@ -20,16 +21,16 @@
 	parts.set(buf);
 	parts.set(new Uint8Array(data), ln);
 	console.log(parts + ' ' + ln + ' ' + data.byteLength);
-      });
-
-      stream.on('end', function()
-      {
-	// Display new data in browser!
 	pic.push(parts);
 	var img = document.createElement("img");
         img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(pic));
         document.body.appendChild(img);
       });
+
+ /*     stream.on('end', function()
+      {
+	// Display new data in browser!
+      });*/
     });
   </script>
 </head>

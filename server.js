@@ -8,14 +8,14 @@ var BinaryServer = require('binaryjs').BinaryServer;
 var fs = require('fs');
 
 require('buffertools'); // fromHex() and indexOf()
-
+var served = 0;
 
 // Start Binary.js server
 var server = BinaryServer({port: 9000});
 // Wait for new user connections
 server.on('connection', function(client){
-
-var fileName = __dirname + '/tiny.jpg';
+console.log('served  ' + served++);
+var fileName = __dirname + '/madcat.jpg';
   
   fs.exists(fileName, function(exists) 
   {
@@ -41,7 +41,7 @@ var fileName = __dirname + '/tiny.jpg';
 		i = buffer.indexOf(sos.fromHex(),i);
 		if (i == -1)
 		{
-		  console.log('EOI ' + buffer.length); // Reached the end of the file. Last iteration.
+		  //console.log('EOI ' + buffer.length); // Reached the end of the file. Last iteration.
 		  i = buffer.length;
 		}
 		var block = i - j;
@@ -62,7 +62,11 @@ var fileName = __dirname + '/tiny.jpg';
 		extract(i,j,0) // Until we have pushed all the bytes between j and i to scan
 		//console.log(scan); // Not slow; noisy.
 		client.send(scan);
-		enumerate(i)
+	      	//var end = Date.now() + 500;
+		//while (Date.now() < end);
+		//setTimeout(function(){
+		enumerate(i,j);
+		//, 5000});
 	      }
 	    }
 	    enumerate(0,0) // Until we get -1 from buffer.indexOf
@@ -84,12 +88,13 @@ app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
-io.sockets.on('connection', function (socket) {
+/*io.sockets.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
   });
 });
+*/
 
 //TO-DO
 //peer review, feedback
